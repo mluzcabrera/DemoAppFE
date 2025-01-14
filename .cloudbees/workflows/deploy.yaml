@@ -1,0 +1,42 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: deploy
+on:
+  workflow_dispatch:
+    inputs:
+      artifactName:
+        type: string
+        required: true
+      artifactVersion:
+        type: string
+        required: true
+      environment:
+        type: string
+        required: true
+      url:
+        type: string
+        required: false
+      digest:
+        type: string
+        required: false
+jobs:
+  pre-prod:
+    if: inputs.environment == 'pre-prod'
+    environment: pre-prod
+    uses: mluzcabrera/changethis/MyAppDeploy.yaml
+    with:
+      artifactName:     ${{ inputs.artifactName }}
+      artifactVersion:  ${{ inputs.artifactVersion }}
+      environment:      ${{ inputs.environment }}
+      url:              ${{ inputs.url }}
+      digest:           ${{ inputs.digest }}
+  prod:
+    if: inputs.environment == 'prod'
+    environment: prod
+    uses: mluzcabrera/changethis/MyAppDeploy.yaml
+    with:
+      artifactName:     ${{ inputs.artifactName }}
+      artifactVersion:  ${{ inputs.artifactVersion }}
+      environment:      ${{ inputs.environment }}
+      url:              ${{ inputs.url }}
+      digest:           ${{ inputs.digest }}
